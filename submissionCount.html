@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submission Counter Widget</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* Simple styling */
+    #submission-count {
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div id="submission-count">
+    Loading count...
+  </div>
+
+  <script>
+    // Replace with your JotForm API key and Form ID
+    const apiKey = '748a2d7443b6adc6b30c0dd96fae86c3';
+    const formId = '243083683720861';
+    
+    // Function to get submissions from the JotForm API
+    function getSubmissions() {
+      const url = `https://api.jotform.com/form/${formId}/submissions?apiKey=${apiKey}`;
+      $.get(url, function(data) {
+        if (data.content) {
+          countSubmissions(data.content);
+        } else {
+          $('#submission-count').text('Failed to load submissions.');
+        }
+      }).fail(function() {
+        $('#submission-count').text('Error fetching submissions.');
+      });
+    }
+
+    // Function to count submissions by name
+    function countSubmissions(submissions) {
+      const nameCount = {};
+      
+      // Loop through all submissions and count names
+      submissions.forEach(submission => {
+        const name = submission.answers['name_field_id'].answer; // Replace with actual name field ID
+        if (name) {
+          nameCount[name] = (nameCount[name] || 0) + 1;
+        }
+      });
+
+      // Display the count of submissions for each name
+      let output = 'Submission counts for each name:\n';
+      for (const name in nameCount) {
+        output += `${name}: ${nameCount[name]} submissions\n`;
+      }
+      $('#submission-count').text(output);
+    }
+
+    // Call the function to fetch and count submissions when the widget loads
+    $(document).ready(function() {
+      getSubmissions();
+    });
+  </script>
+</body>
+</html>
