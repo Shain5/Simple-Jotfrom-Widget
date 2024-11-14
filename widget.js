@@ -3,7 +3,7 @@ const formID = "243172322440344";
 const apiKey = "74bccaeb08a966037164e1ef72ad327e"; 
 
 // Construct the API URL with the custom domain
-const apiUrl = `https://forms.medicaretags.com/form/${formID}/submissions?apiKey=${apiKey}`;
+const apiUrl = `https://eu-api.jotform.com/form/${formID}/submissions?apiKey=${apiKey}`;
 
 // Function to fetch submissions and count entries with the first name "Shain"
 async function fetchSubmissions() {
