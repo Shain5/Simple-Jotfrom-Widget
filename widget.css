@@ -1,0 +1,23 @@
+#widget-container {
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  max-width: 300px;
+}
+
+#name-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+#submission-count {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
