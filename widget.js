@@ -1,36 +1,45 @@
-// Using provided form ID and API key
-const formID = "243172322440344"; 
-const apiKey = "74bccaeb08a966037164e1ef72ad327e"; 
+(function($) {
+    var apiUrl = 'https://eu-api.jotform.com/form/243172322440344/submissions?apiKey=74bccaeb08a966037164e1ef72ad327e';
 
-// Construct the API URL with the custom domain
-const apiUrl = `https://eu-api.jotform.com/form/${formID}/submissions?apiKey=${apiKey}`;
+    // Function to fetch and filter the submissions based on the name entered
+    function fetchSubmissions(name) {
+        $.ajax({
+            url: apiUrl,
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.responseCode === 200) {
+                    var submissions = response.content;
+                    var count = 0;
 
-// Function to fetch submissions and count entries with the first name "Shain"
-async function fetchSubmissions() {
-  try {
-    // Fetch submission data from JotForm API
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+                    // Iterate through submissions and filter based on first name
+                    submissions.forEach(function(submission) {
+                        var firstName = submission.answers["3"] && submission.answers["3"].answer.first;
 
-    // Filter submissions to count entries with the first name "Shain"
-    const count = data.content.filter(submission => 
-      submission.answers["3"] && submission.answers["3"].answer.first === "Shain"
-    ).length;
+                        if (firstName && firstName.toLowerCase() === name.toLowerCase()) {
+                            count++;
+                        }
+                    });
 
-    // Display the count in the widget
-    document.getElementById("submission-count").innerText = `Previous submissions with first name "Shain": ${count}`;
-  } catch (error) {
-    console.error("Error fetching submissions:", error);
-    document.getElementById("submission-count").innerText = "Error fetching data.";
-  }
-}
+                    // Update the display with the count
+                    $('#submission-count').text('Previous submissions with first name "' + name + '": ' + count);
+                } else {
+                    $('#submission-count').text('Error retrieving data.');
+                }
+            },
+            error: function() {
+                $('#submission-count').text('Error retrieving data.');
+            }
+        });
+    }
 
-// Event listener to refresh count when the user types a name
-document.getElementById("name-input").addEventListener("input", (event) => {
-  const name = event.target.value;
-  if (name === "Shain") {
-    fetchSubmissions();
-  } else {
-    document.getElementById("submission-count").innerText = "Previous submissions with first name 'Shain': 0";
-  }
-});
+    // Event listener for input change
+    $('#name-input').on('input', function() {
+        var name = $(this).val().trim();
+        if (name) {
+            fetchSubmissions(name); // Fetch data if the name is entered
+        } else {
+            $('#submission-count').text('Previous submissions with first name "": 0');
+        }
+    });
+})(jQuery);
