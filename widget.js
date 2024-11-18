@@ -1,7 +1,7 @@
 (function($) {
     // Wait until the DOM is fully loaded
     $(document).ready(function() {
-        var apiUrl = 'https://eu-api.jotform.com/form/243172322440344/submissions?apiKey=74bccaeb08a966037164e1ef72ad327e';
+        var apiUrl = 'https://forms.medicaretags.com/API/form/243083683720861/submissions?apiKey=fd189b26c15e51452ee2a9384fe48e2e';
 
         // Function to fetch and filter the submissions based on the name entered
         function fetchSubmissions(name) {
@@ -9,6 +9,7 @@
                 url: apiUrl,
                 method: 'GET',
                 dataType: 'json',
+                headers: {'jf-team-id': 242704765020046},
                 success: function(response) {
                     console.log("API Response:", response); // Log the API response for debugging
 
@@ -18,15 +19,21 @@
 
                         // Iterate through submissions and filter based on first name
                         submissions.forEach(function(submission) {
-                            var firstName = submission.answers["3"] && submission.answers["3"].answer.first;
-
-                            if (firstName && firstName.toLowerCase() === name.toLowerCase()) {
-                                count++;
+                           var answers = submission.answers;
+                            for (var key in answers) {
+                                if (
+                                    answers[key].answer && 
+                                    answers[key].answer.toString().toLowerCase() === valueToFilter.toLowerCase()
+                                ) {
+                                    count++;
+                                    break; // Stop checking other fields once a match is found
+                                }
                             }
+
                         });
 
                         // Update the display with the count
-                        $('#submission-count').text('Previous submissions with first name "' + name + '": ' + count);
+                        $('#submission-count').text('Previous submissions with first name "' + valueToFilter + '": ' + count);
                     } else {
                         $('#submission-count').text('Error retrieving data.');
                     }
