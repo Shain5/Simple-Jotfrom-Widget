@@ -1,7 +1,11 @@
 (function($) {
     // Wait until the DOM is fully loaded
     $(document).ready(function() {
-        var apiUrl = 'https://forms.medicaretags.com/API/form/243083683720861/submissions?apiKey=fd189b26c15e51452ee2a9384fe48e2e';
+        var apiUrl = 'https://eu-api.jotform.com/form/243172322440344/submissions?apiKey=74bccaeb08a966037164e1ef72ad327e';
+
+        // Debounce delay in milliseconds
+        var debounceDelay = 500; // Delay for API calls
+        var debounceTimer;
 
         // Function to fetch and filter the submissions based on the name entered
         function fetchSubmissions(name) {
@@ -9,50 +13,41 @@
                 url: apiUrl,
                 method: 'GET',
                 dataType: 'json',
-                headers: {'jf-team-id': 242704765020046},
                 success: function(response) {
-                    console.log("API Response:", response); // Log the API response for debugging
+                    console.log("API Response:", response); // Debugging
 
                     if (response.responseCode === 200) {
                         var submissions = response.content;
                         var count = 0;
 
-                        // Iterate through submissions and filter based on first name
+                        // Filter submissions by matching the name
                         submissions.forEach(function(submission) {
-                           var answers = submission.answers;
-                            for (var key in answers) {
-                                if (
-                                    answers[key].answer && 
-                                    answers[key].answer.toString().toLowerCase() === valueToFilter.toLowerCase()
-                                ) {
-                                    count++;
-                                    break; // Stop checking other fields once a match is found
-                                }
+                            var firstName = submission.answers["3"] && submission.answers["3"].answer.first; // Adjust based on field keys
+                            if (firstName && firstName.toLowerCase() === name.toLowerCase()) {
+                                count++;
                             }
-
                         });
 
-                        // Update the display with the count
-                        $('#submission-count').text('Previous submissions with first name "' + valueToFilter + '": ' + count);
+                        // Update the widget with the name and count
+                        $('#submission-count').text('Previous submissions for "' + name + '": ' + count);
                     } else {
                         $('#submission-count').text('Error retrieving data.');
                     }
                 },
                 error: function() {
-                    console.log("Error fetching data from API."); // Log an error message
+                    console.log("Error fetching data from API."); // Debugging
                     $('#submission-count').text('Error retrieving data.');
                 }
             });
         }
 
-        // Event listener for input change
-        $('#name-input').on('input', function() {
-            var name = $(this).val().trim();
+        // Monitor changes in the Short Text Properties widget
+        var observeNameField = setInterval(function() {
+            var name = $('#input_35').val(); // Fetch the value from Short Text Properties widget
             if (name) {
-                fetchSubmissions(name); // Fetch data if the name is entered
-            } else {
-                $('#submission-count').text('Previous submissions with first name "": 0');
+                clearInterval(observeNameField); // Stop polling once the name is detected
+                fetchSubmissions(name); // Fetch submission count for the name
             }
-        });
+        }, 500); // Check every 500ms until the name field is populated
     });
 })(jQuery);
