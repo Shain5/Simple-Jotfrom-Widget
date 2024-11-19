@@ -1,11 +1,6 @@
 (function($) {
-    // Wait until the DOM is fully loaded
     $(document).ready(function() {
         var apiUrl = 'https://eu-api.jotform.com/form/243172322440344/submissions?apiKey=74bccaeb08a966037164e1ef72ad327e';
-
-        // Debounce delay in milliseconds
-        var debounceDelay = 500; // Delay for API calls
-        var debounceTimer;
 
         // Function to fetch and filter the submissions based on the name entered
         function fetchSubmissions(name) {
@@ -14,15 +9,15 @@
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    console.log("API Response:", response); // Debugging
+                    console.log("API Response:", response);
 
                     if (response.responseCode === 200) {
                         var submissions = response.content;
                         var count = 0;
 
-                        // Filter submissions by matching the name
+                        // Iterate through submissions and filter based on the name
                         submissions.forEach(function(submission) {
-                            var firstName = submission.answers["3"] && submission.answers["3"].answer.first; // Adjust based on field keys
+                            var firstName = submission.answers["3"] && submission.answers["3"].answer.first; // Adjust field key if needed
                             if (firstName && firstName.toLowerCase() === name.toLowerCase()) {
                                 count++;
                             }
@@ -35,18 +30,21 @@
                     }
                 },
                 error: function() {
-                    console.log("Error fetching data from API."); // Debugging
+                    console.log("Error fetching data from API.");
                     $('#submission-count').text('Error retrieving data.');
                 }
             });
         }
 
-        // Monitor changes in the Short Text Properties widget
+        // Monitor changes in the Short Text Properties field
         var observeNameField = setInterval(function() {
-            var name = $('#input_35').val(); // Fetch the value from Short Text Properties widget
-            if (name) {
-                clearInterval(observeNameField); // Stop polling once the name is detected
-                fetchSubmissions(name); // Fetch submission count for the name
+            var nameField = document.getElementById('input_35'); // Replace with the correct ID
+            if (nameField) {
+                var name = nameField.value.trim(); // Retrieve the live value
+                if (name) {
+                    clearInterval(observeNameField); // Stop polling once a valid name is detected
+                    fetchSubmissions(name); // Fetch submission count for the name
+                }
             }
         }, 500); // Check every 500ms until the name field is populated
     });
