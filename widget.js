@@ -47,11 +47,9 @@
             console.log("shortTextValue:", shortTextValue);
             var fieldValue = $('#input_225').val();
             console.log("fieldValue:", fieldValue);
+            var fieldValue2 = $('#name').val();
+             console.log("fieldValue2:", fieldValue2);
 
-            $('#input_225').on('input', function() {
-                    var fieldValue2 = $(this).val();
-                    console.log("fieldValue2:",fieldValue2);  // Log updated value
-                });
 
             // If a value is entered, fetch the submission count
             if (shortTextValue) {
