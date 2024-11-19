@@ -44,6 +44,7 @@
         setInterval(function() {
             // Get the value of the Short Text field
             var shortTextValue = $('input[name="' + uniqueName + '"]').val();
+            console.log("shortTextValue:", shortTextValue);
 
             // If a value is entered, fetch the submission count
             if (shortTextValue) {
