@@ -36,16 +36,12 @@
             });
         }
 
-        // Monitor changes in the Short Text Properties field
-        var observeNameField = setInterval(function() {
-            var nameField = document.getElementById('input_35'); // Replace with the correct ID
-            if (nameField) {
-                var name = nameField.value.trim(); // Retrieve the live value
-                if (name) {
-                    clearInterval(observeNameField); // Stop polling once a valid name is detected
-                    fetchSubmissions(name); // Fetch submission count for the name
-                }
+        // Monitor the widget's text box for changes
+        $('#widget-name-input').on('input', function() {
+            var name = $(this).val().trim(); // Get the copied name
+            if (name) {
+                fetchSubmissions(name); // Fetch submission count for the name
             }
-        }, 500); // Check every 500ms until the name field is populated
+        });
     });
 })(jQuery);
