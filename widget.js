@@ -36,12 +36,22 @@
             });
         }
 
-        // Monitor the widget's text box for changes
-        $('#widget-name-input').on('input', function() {
-            var name = $(this).val().trim(); // Get the copied name
-            if (name) {
-                fetchSubmissions(name); // Fetch submission count for the name
+        // Get the unique name of the Short Text Property field (replace q35_typeA with the actual unique name)
+        var uniqueName = "name"; // Update this with the actual unique name of the Short Text field
+         console.log("uniqueName:", uniqueName);
+
+        // Check for the field value using the unique name
+        setInterval(function() {
+            // Get the value of the Short Text field
+            var shortTextValue = $('input[name="' + uniqueName + '"]').val();
+
+            // If a value is entered, fetch the submission count
+            if (shortTextValue) {
+                $('#submission-count').text('Checking previous submissions for: ' + shortTextValue);
+                fetchSubmissions(shortTextValue); // Fetch submission count for the name
+            } else {
+                $('#submission-count').text('Waiting for input...');
             }
-        });
+        }, 500); // Poll every 500ms until the Short Text field is populated
     });
 })(jQuery);
