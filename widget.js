@@ -48,6 +48,11 @@
             var fieldValue = $('#input_225').val();
             console.log("fieldValue:", fieldValue);
 
+            $('#input_225').on('input', function() {
+                    var fieldValue2 = $(this).val();
+                    console.log("fieldValue2:",fieldValue2);  // Log updated value
+                });
+
             // If a value is entered, fetch the submission count
             if (shortTextValue) {
                 $('#submission-count').text('Checking previous submissions for: ' + shortTextValue);
