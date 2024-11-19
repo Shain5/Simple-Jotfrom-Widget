@@ -49,6 +49,9 @@
             console.log("fieldValue:", fieldValue);
             var fieldValue2 = $('#name').val();
              console.log("fieldValue2:", fieldValue2);
+             document.getElementById('input_225').addEventListener('input', function() {
+                 console.log("this is the value right now", this.value); // Logs the current input value in real-time
+             });
 
 
             // If a value is entered, fetch the submission count
